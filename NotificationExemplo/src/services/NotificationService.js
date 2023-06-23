@@ -1,6 +1,9 @@
 import PushNotification from "react-native-push-notification"
 
 class NotificationService {
+    setNavigation = (novoNavegador) => {
+        navegador = novoNavegador
+    }
 
     // Configuração orientada pela documentação do React Native Push Notification
     // Essa configuração garante o funcionamento da biblioteca no Android e no iOS
@@ -11,6 +14,7 @@ class NotificationService {
             },
             onNotification: function (notification) {
                 console.log("[NotificationManager] onNotification:", notification);
+                navegador.navigate(notification.title);
             },
         })
     }
@@ -69,6 +73,7 @@ class NotificationService {
     scheduleNotification = () => {
         PushNotification.localNotificationSchedule({
             channelId: "notificador",
+            title: "Redirect",
             id: 3,
             message: "Notificação Agendada 1 😉", // (required)
             date: new Date(Date.now() + 5 * 1000),
@@ -80,6 +85,7 @@ class NotificationService {
 
           PushNotification.localNotificationSchedule({
             channelId: "notificador",
+            title: "Redirect",
             id: 4,
             message: "Notificação Agendada 2 😉", // (required)
             date: new Date(Date.now() + 15 * 1000),

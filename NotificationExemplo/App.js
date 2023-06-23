@@ -1,10 +1,20 @@
 // Componentes base
 import React, { Component } from 'react'
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
+
+// Importação de telas e serviços
+import Home from './src/screens/Home'
+import Redirect from './src/screens/Redirect'
+import Restaurantes from './src/screens/Restaurantes'
+import Mercados from './src/screens/Mercados'
 import { Notification } from './src/services/NotificationService'
+
 
 // Declaração de constantes
 const notificador = Notification;
+const Stack = createStackNavigator();
 
 export default class App extends Component {
   constructor(props) {
@@ -20,25 +30,18 @@ export default class App extends Component {
   onPressSendNotification = () => {
     notificador.showNotification(
       1,
-      "Esse é o nosso título",
-      "E aqui está a mensagem. Vamos inserir uma mensagem um pouco mais longa para vermos o Android irá se adaptar ao conteúdo na tela?",
+      "Restaurantes",
+      "👉 Clique aqui e confira nossos restaurantes.",
       {}, // data
       {} // options
     ),
-    notificador.showNotification(
-      1,
-      "Teste 2 😄",
-      "Teste 2 🥰",
-      {}, // data
-      {} // options
-    ),
-    notificador.showNotification(
-      2,
-      "Teste 3 ✅",
-      "Teste 3",
-      {}, // data
-      {} // options
-    )
+      notificador.showNotification(
+        2,
+        "Mercados",
+        "👉 Clique aqui e confira nossos mercados parceiros.",
+        {}, // data
+        {} // options
+      )
   }
 
   onPressCancelAllLocalNotification = () => {
@@ -47,20 +50,28 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={this.onPressSendNotification}
-        >
-          <Text>Enviar notificação</Text>
-        </TouchableOpacity>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home">
+            {
+              ({navigation}) => {
+                notificador.setNavigation(navigation)
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={this.onPressCancelAllLocalNotification}>
-          <Text>Cancelar notificações</Text>
-        </TouchableOpacity>
-      </View>
+                return (
+                  <Home
+                    Send={this.onPressSendNotification}
+                    Cancel={this.onPressCancelAllLocalNotification}
+                  />
+                )
+              }
+            }
+          </Stack.Screen>
+
+          <Stack.Screen name="Redirect" component={Redirect} />
+          <Stack.Screen name="Mercados" component={Mercados} />
+          <Stack.Screen name="Restaurantes" component={Restaurantes} />
+        </Stack.Navigator>
+      </NavigationContainer>
     )
   }
 }
